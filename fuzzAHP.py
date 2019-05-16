@@ -1,7 +1,4 @@
-#!/usr/bin/env python
 # coding: utf-8
-
-
 import numpy as np
 file_path_1 = "./Wang et al_2008.prj"
 file_path_2 = "./Tyagi et al_2017.prj"
@@ -30,7 +27,10 @@ title_indexes.append(len(lines))
 #parse işlemleri bitti
 
 
+# In[57]:
 
+
+#dosyadan tüm matrisleri okur
 matrixes = []
 for index,i in enumerate(title_indexes):
     if i > 0:
@@ -41,8 +41,10 @@ for matrix in matrixes:
             matrix[index] = list(map(lambda x: [float(i) for i in list(x.split(" "))],elm.split(";")))
 
 
+# In[58]:
 
-#dosyadan okunanları düzenleyip bir diziye atar
+
+#dosyadan okunan matrisleri gruplandırır
 matrix_groups = []
 for index,matrix in enumerate(matrixes):
     if index == 0:
@@ -50,7 +52,6 @@ for index,matrix in enumerate(matrixes):
     if int(matrix[0].split(";")[1]) > 0:    
         t = matrixes[index:index + int(matrix[0].split(";")[1])+1]
         matrix_groups.append(t)
-
 
 
 #üçgensel üyeliklere sahip matrisin verilen satır toplamını alır
@@ -76,7 +77,7 @@ def sumTriRows(matrix):
     return srows
 
 
-#üçgensel sayılarda verilenin (l, m, u) toplamını alır
+#listedeki tüm elemanları toplar
 def sumL(l):
     s = 0;
     for i in l:
@@ -91,6 +92,7 @@ def sumTriRowsWithoutIndex(matrix,lmu,withoutindex):
             continue
         srows.append(sumTriRow(row,lmu))
     return sumL(srows)
+
 
 #verilen üst ve alt matrislere göre ağırlıklar hesaplanır
 def calcPriorityWeight(parent_weight,childs_weights):
@@ -132,7 +134,6 @@ def calcSi(matrix):
         calc.append(c)
     return calc
 
-
 #verilen iki matrisi karşılaştırır
 def calcW(A,B):
     if A[1] >= B[1]:
@@ -150,7 +151,6 @@ def normalize(l):
         n.append(i/s)
     return n
 
-
 #karılaştırma vektörlerinde minleri seçerek ve değerler normalize edilerek ağırlık vektörleri oluşturulur
 def calcAllW(matrix):
     si=calcSi(matrix)
@@ -163,8 +163,6 @@ def calcAllW(matrix):
         calc.append(min(c))
     calc = normalize(calc)
     return calc
-
-
 
 #tüm matrisler için ağırlıklar hesaplanır
 matrixes_weighted = {}
@@ -193,15 +191,10 @@ for matrix_group in matrix_groups:
     priority_weights.append(kk)  
 
 
-
 priority_weights = transpose(priority_weights)
-
-
-
 
 aim_weights = calcAllW(aim())
 
-
-
 print(calcPriorityWeight(aim_weights,priority_weights))
+
 
